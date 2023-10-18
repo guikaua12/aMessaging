@@ -51,8 +51,6 @@ public class Main extends JavaPlugin implements CommandExecutor {
         bungeeChannel = new BungeeChannel(this);
         bungeeChannel.init();
 
-        System.out.println("test");
-
         bungeeChannel.subscribe("someChannel", args -> {
             final ByteArrayDataInput dataInput = args.getDataInput();
 
