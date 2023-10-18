@@ -26,6 +26,8 @@ package me.approximations.aMessaging;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface Channel<I extends MessageInputArgs, C extends MessageCallbackArgs> {
     void init();
 
@@ -34,4 +36,6 @@ public interface Channel<I extends MessageInputArgs, C extends MessageCallbackAr
     void subscribe(String subChannel, MessageCallback<C> listener);
 
     void sendMessage(I args);
+
+    <K, R> CompletableFuture<R> sendReqRespMessage(I args, Class<? extends K> inputClazz, Class<? extends R> responseClazz);
 }

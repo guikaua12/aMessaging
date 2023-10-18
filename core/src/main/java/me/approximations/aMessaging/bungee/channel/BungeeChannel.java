@@ -35,6 +35,7 @@ import me.approximations.aMessaging.MessageListener;
 import me.approximations.aMessaging.bungee.callback.args.BungeeCallbackArgs;
 import me.approximations.aMessaging.bungee.input.args.BungeeInputArgs;
 import me.approximations.aMessaging.bungee.message.actions.MessageAction;
+import me.approximations.aMessaging.bungee.message.actions.ResponseableMessageAction;
 import me.approximations.aMessaging.bungee.message.response.handler.MessageResponseHandler;
 import me.approximations.aMessaging.bungee.message.response.handler.PlayerCountHandler;
 import org.bukkit.Bukkit;
@@ -47,6 +48,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArgs>, PluginMessageListener {
@@ -122,6 +124,23 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
         if (player != null) {
             player.sendPluginMessage(this.plugin, BUNGEE_CHANNEL, out.toByteArray());
         }
+    }
+
+    @Override
+    public <K, R> CompletableFuture<R> sendReqRespMessage(BungeeInputArgs args, Class<? extends K> inputClazz, Class<? extends R> responseClazz) {
+        if (!(args.getMessageAction() instanceof ResponseableMessageAction))
+            throw new IllegalArgumentException("Unsupported message action");
+
+        sendMessage(args);
+
+        final ResponseableMessageAction<K, R> messageAction = (ResponseableMessageAction<K, R>) args.getMessageAction();
+        final MessageResponseHandler<K, R> handler = responseHandlerMap.get(messageAction.getSubChannel());
+
+        if (handler == null)
+            throw new IllegalStateException("No handler found for subchannel " + args.getMessageAction().getSubChannel());
+
+
+        return messageAction.addFuture(handler);
     }
 
 
