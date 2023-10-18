@@ -34,6 +34,7 @@ import me.approximations.aMessaging.MessageCallback;
 import me.approximations.aMessaging.MessageListener;
 import me.approximations.aMessaging.bungee.callback.args.BungeeCallbackArgs;
 import me.approximations.aMessaging.bungee.input.args.BungeeInputArgs;
+import me.approximations.aMessaging.bungee.message.MessageAction;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -87,28 +88,36 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
         });
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void sendMessage(String subChannel, BungeeInputArgs args) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("Forward");
-        out.writeUTF("ALL");
-        out.writeUTF(subChannel);
     public void sendMessage(BungeeInputArgs args) {
+        final MessageAction messageAction = args.getMessageAction();
 
-        ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
-        DataOutputStream msgout = new DataOutputStream(msgbytes);
+        final ByteArrayDataOutput out = ByteStreams.newDataOutput();
         try {
-            // TODO: implement this
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            messageAction.writeHead(out);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        final ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+        final DataOutputStream msgout = new DataOutputStream(msgbytes);
+
+        try {
+            messageAction.writeBody(msgout);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
 
         Player player = args.getPlayer();
+        if (player == null) player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
 
-        player.sendPluginMessage(this.plugin, BUNGEE_CHANNEL, out.toByteArray());
+        if (player != null) {
+            player.sendPluginMessage(this.plugin, BUNGEE_CHANNEL, out.toByteArray());
+        }
     }
 
 

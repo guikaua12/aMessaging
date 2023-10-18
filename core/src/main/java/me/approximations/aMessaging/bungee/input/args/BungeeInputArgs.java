@@ -24,12 +24,15 @@
 
 package me.approximations.aMessaging.bungee.input.args;
 
+import lombok.Builder;
 import lombok.Data;
 import me.approximations.aMessaging.MessageInputArgs;
+import me.approximations.aMessaging.bungee.message.MessageAction;
 import org.bukkit.entity.Player;
 
 @Data
+@Builder
 public class BungeeInputArgs implements MessageInputArgs {
     private final Player player;
-
+    private final MessageAction messageAction;
 }
