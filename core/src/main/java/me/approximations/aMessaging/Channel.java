@@ -33,5 +33,5 @@ public interface Channel<I extends MessageInputArgs, C extends MessageCallbackAr
 
     void subscribe(String subChannel, MessageCallback<C> listener);
 
-    void sendMessage(String subChannel, I args);
+    void sendMessage(I args);
 }

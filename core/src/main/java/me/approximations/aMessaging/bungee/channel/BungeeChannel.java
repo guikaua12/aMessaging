@@ -93,6 +93,7 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
         out.writeUTF("Forward");
         out.writeUTF("ALL");
         out.writeUTF(subChannel);
+    public void sendMessage(BungeeInputArgs args) {
 
         ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
         DataOutputStream msgout = new DataOutputStream(msgbytes);
