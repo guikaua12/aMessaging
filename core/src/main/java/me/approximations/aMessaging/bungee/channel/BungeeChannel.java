@@ -54,7 +54,7 @@ import java.util.concurrent.CompletableFuture;
 public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArgs>, PluginMessageListener {
     public static final String BUNGEE_CHANNEL = "BungeeCord";
     private final List<MessageListener<BungeeCallbackArgs>> listeners = new ArrayList<>();
-    private final Map<String, MessageResponseHandler> responseHandlerMap = new HashMap<>();
+    private final Map<String, MessageResponseHandler<?, ?>> responseHandlerMap = new HashMap<>();
     private final Plugin plugin;
 
     @Override
@@ -152,7 +152,7 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
         final ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
         final String subchannel = in.readUTF();
 
-        final MessageResponseHandler handler = responseHandlerMap.get(subchannel);
+        final MessageResponseHandler<?, ?> handler = responseHandlerMap.get(subchannel);
         if (handler != null) {
             handler.handle(in);
         }
