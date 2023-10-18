@@ -25,11 +25,13 @@
 package me.approximations.aMessaging.bukkitTest;
 
 import com.google.common.collect.Iterables;
+import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.approximations.aMessaging.bungee.channel.BungeeChannel;
 import me.approximations.aMessaging.bungee.input.args.BungeeInputArgs;
 import me.approximations.aMessaging.bungee.message.actions.ConnectOtherAction;
+import me.approximations.aMessaging.bungee.message.actions.ForwardAction;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,9 +39,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
 
 public class Main extends JavaPlugin implements CommandExecutor {
     public static Main INSTANCE;
@@ -54,39 +55,25 @@ public class Main extends JavaPlugin implements CommandExecutor {
         bungeeChannel = new BungeeChannel(this);
         bungeeChannel.init();
 
-//        bungeeChannel.subscribe("someChannel", args -> {
-//            System.out.println(args.getDataInput().readUTF());
-//        });
+        bungeeChannel.subscribe("someChannel", args -> {
+            final ByteArrayDataInput dataInput = args.getDataInput();
+
             // TODO: implement a better api for this
+            final short len = dataInput.readShort();
+            final byte[] msgbytes = new byte[len];
+            dataInput.readFully(msgbytes);
 
-        bungeeChannel.sendMessage(
-                BungeeInputArgs.builder()
-                        .messageAction(new ConnectOtherAction("Approximations", "server1"))
-                        .build()
-        );
+            final DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
 
-//        Bukkit.getScheduler().runTaskLater(this, () -> {
-//            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-//            out.writeUTF("Forward");
-//            out.writeUTF("ALL");
-//            out.writeUTF("someChannel");
-//
-//            ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
-//            DataOutputStream msgout = new DataOutputStream(msgbytes);
-//            try {
-//                msgout.writeUTF("Hello world");
-//            } catch (IOException exception) {
-//                exception.printStackTrace();
-//            }
-//
-//            out.writeShort(msgbytes.toByteArray().length);
-//            out.write(msgbytes.toByteArray());
-//
-//            Player player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
-//
-//            player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-//
-//        }, 40);
+            try {
+                System.out.println(msgin.readInt());
+                System.out.println(msgin.readInt());
+                System.out.println(msgin.readUTF());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
     }
 
     @Override
@@ -98,14 +85,15 @@ public class Main extends JavaPlugin implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!command.getName().equals("aMessagingTest")) return false;
 
-        if (args.length != 2) return false;
-
-        final String playerName = args[0];
-        final String serverName = args[1];
+        /*bungeeChannel.sendMessage(
+                BungeeInputArgs.builder()
+                        .messageAction(new ConnectOtherAction(playerName, serverName))
+                        .build()
+        );*/
 
         bungeeChannel.sendMessage(
                 BungeeInputArgs.builder()
-                        .messageAction(new ConnectOtherAction(playerName, serverName))
+                        .messageAction(new ForwardAction(ForwardAction.SERVER_ALL, "someChannel", Arrays.asList(1337, 69, "pica")))
                         .build()
         );
 
