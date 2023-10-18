@@ -57,6 +57,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
 //        bungeeChannel.subscribe("someChannel", args -> {
 //            System.out.println(args.getDataInput().readUTF());
 //        });
+            // TODO: implement a better api for this
 
         bungeeChannel.sendMessage(
                 BungeeInputArgs.builder()
