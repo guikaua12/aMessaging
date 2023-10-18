@@ -26,6 +26,7 @@ package me.approximations.aMessaging.bungee.message.actions;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataOutput;
 import java.io.IOException;
@@ -36,6 +37,11 @@ public class ConnectOtherAction extends MessageAction {
     public static final String SUB_CHANNEL = "ConnectOther";
     private final String playerName;
     private final String serverName;
+
+    @Override
+    public @NotNull String getSubChannel() {
+        return SUB_CHANNEL;
+    }
 
     @Override
     public void writeHead(DataOutput dataOutput) throws IOException {

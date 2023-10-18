@@ -24,10 +24,16 @@
 
 package me.approximations.aMessaging.bungee.message.actions;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.DataOutput;
 import java.io.IOException;
 
 public abstract class MessageAction {
+    public @NotNull String getSubChannel() {
+        return "";
+    }
+
     public void writeHead(DataOutput dataOutput) throws IOException {
 
     }

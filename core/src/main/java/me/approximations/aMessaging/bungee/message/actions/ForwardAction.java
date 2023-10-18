@@ -43,6 +43,10 @@ public class ForwardAction extends MessageAction {
     private final @NotNull String subChannel;
     private final @NotNull List<Object> objects;
 
+    public @NotNull String getSubChannel() {
+        return SUB_CHANNEL;
+    }
+
     @Override
     public void writeHead(DataOutput dataOutput) throws IOException {
         dataOutput.writeUTF(SUB_CHANNEL);
