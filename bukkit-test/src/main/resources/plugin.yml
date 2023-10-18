@@ -1,3 +1,7 @@
 name: aMessageTest
 main: me.approximations.aMessaging.bukkitTest.Main
 version: 1.0.0
+commands:
+  aMessagingTest:
+    description: Test command
+    usage: /test
