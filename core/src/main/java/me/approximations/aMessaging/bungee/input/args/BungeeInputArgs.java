@@ -29,10 +29,12 @@ import lombok.Data;
 import me.approximations.aMessaging.MessageInputArgs;
 import me.approximations.aMessaging.bungee.message.MessageAction;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Data
 @Builder
 public class BungeeInputArgs implements MessageInputArgs {
-    private final Player player;
-    private final MessageAction messageAction;
+    private final @Nullable Player player;
+    private final @NotNull MessageAction messageAction;
 }
