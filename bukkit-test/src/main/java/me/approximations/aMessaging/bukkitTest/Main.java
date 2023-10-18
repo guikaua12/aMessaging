@@ -24,22 +24,18 @@
 
 package me.approximations.aMessaging.bukkitTest;
 
-import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import me.approximations.aMessaging.bungee.channel.BungeeChannel;
 import me.approximations.aMessaging.bungee.input.args.BungeeInputArgs;
-import me.approximations.aMessaging.bungee.message.actions.ConnectOtherAction;
 import me.approximations.aMessaging.bungee.message.actions.ForwardAction;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class Main extends JavaPlugin implements CommandExecutor {
