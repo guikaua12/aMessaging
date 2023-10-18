@@ -52,8 +52,6 @@ public class Main extends JavaPlugin {
             System.out.println(args.getDataInput().readUTF());
         });
 
-        bungeeChannel.sendMessage(new BungeeInputArgs(null, ));
-
         Bukkit.getScheduler().runTaskLater(this, () -> {
             ByteArrayDataOutput out = ByteStreams.newDataOutput();
             out.writeUTF("Forward");
@@ -64,7 +62,6 @@ public class Main extends JavaPlugin {
             DataOutputStream msgout = new DataOutputStream(msgbytes);
             try {
                 msgout.writeUTF("Hello world");
-                msgout.write
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
