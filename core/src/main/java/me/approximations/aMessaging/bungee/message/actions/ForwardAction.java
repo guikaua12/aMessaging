@@ -48,14 +48,14 @@ public class ForwardAction extends MessageAction {
     }
 
     @Override
-    public void writeHead(DataOutput dataOutput) throws IOException {
+    public void writeHead(@NotNull DataOutput dataOutput) throws IOException {
         dataOutput.writeUTF(SUB_CHANNEL);
         dataOutput.writeUTF(server);
         dataOutput.writeUTF(subChannel);
     }
 
     @Override
-    public void writeBody(DataOutput dataOutput) throws IOException {
+    public void writeBody(@NotNull DataOutput dataOutput) throws IOException {
         for (Object object : objects) {
             if (object instanceof String) {
                 dataOutput.writeUTF((String) object);

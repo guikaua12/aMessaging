@@ -34,11 +34,11 @@ public abstract class MessageAction {
         return "";
     }
 
-    public void writeHead(DataOutput dataOutput) throws IOException {
+    public void writeHead(@NotNull DataOutput dataOutput) throws IOException {
 
     }
 
-    public void writeBody(DataOutput dataOutput) throws IOException {
+    public void writeBody(@NotNull DataOutput dataOutput) throws IOException {
 
     }
 }

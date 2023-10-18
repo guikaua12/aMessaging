@@ -44,7 +44,7 @@ public class ConnectOtherAction extends MessageAction {
     }
 
     @Override
-    public void writeHead(DataOutput dataOutput) throws IOException {
+    public void writeHead(@NotNull DataOutput dataOutput) throws IOException {
         dataOutput.writeUTF(SUB_CHANNEL);
         dataOutput.writeUTF(playerName);
         dataOutput.writeUTF(serverName);
