@@ -128,15 +128,17 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
 
         final ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
         final String subchannel = in.readUTF();
+
+        {
             final BungeeCallbackArgs args = new BungeeCallbackArgs(player, in);
 
-        for (final MessageListener<BungeeCallbackArgs> listener : listeners) {
-            if (!listener.getSubChannel().equals(subchannel)) continue;
+            for (final MessageListener<BungeeCallbackArgs> listener : listeners) {
+                if (!listener.getSubChannel().equals(subchannel)) continue;
 
-            final MessageCallback<BungeeCallbackArgs> callback = listener.getCallback();
+                final MessageCallback<BungeeCallbackArgs> callback = listener.getCallback();
 
-            final BungeeCallbackArgs args = new BungeeCallbackArgs(player, in);
-            callback.handle(args);
+                callback.handle(args);
+            }
         }
 
     }
