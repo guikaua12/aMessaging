@@ -34,7 +34,7 @@ import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 
 @Getter
-public class PlayerCountHandler implements MessageResponseHandler {
+public class PlayerCountHandler implements MessageResponseHandler<String, Integer> {
     public static final String SUB_CHANNEL = "PlayerCount";
 
     private final Map<String, Queue<CompletableFuture<Integer>>> map = new HashMap<>();
@@ -55,5 +55,12 @@ public class PlayerCountHandler implements MessageResponseHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void addFuture(String key, CompletableFuture<Integer> future) {
+        final Queue<CompletableFuture<Integer>> queue = map.computeIfAbsent(key, k -> new java.util.concurrent.ConcurrentLinkedQueue<>());
+
+        queue.add(future);
     }
 }

@@ -25,7 +25,10 @@
 package me.approximations.aMessaging.bungee.message.response.handler;
 
 import java.io.DataInput;
+import java.util.concurrent.CompletableFuture;
 
-public interface MessageResponseHandler {
+public interface MessageResponseHandler<I, O> {
     void handle(DataInput dataInput);
+
+    void addFuture(I key, CompletableFuture<O> future);
 }
