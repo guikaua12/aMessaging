@@ -27,7 +27,7 @@ package me.approximations.aMessaging.bungee.input.args;
 import lombok.Builder;
 import lombok.Data;
 import me.approximations.aMessaging.MessageInputArgs;
-import me.approximations.aMessaging.bungee.message.MessageAction;
+import me.approximations.aMessaging.bungee.message.actions.MessageAction;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

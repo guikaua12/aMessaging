@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging.bungee.message;
+package me.approximations.aMessaging.bungee.message.actions;
 
 import java.io.DataOutput;
 import java.io.IOException;

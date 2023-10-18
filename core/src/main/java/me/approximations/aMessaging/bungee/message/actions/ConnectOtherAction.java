@@ -26,7 +26,6 @@ package me.approximations.aMessaging.bungee.message.actions;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import me.approximations.aMessaging.bungee.message.MessageAction;
 
 import java.io.DataOutput;
 import java.io.IOException;
