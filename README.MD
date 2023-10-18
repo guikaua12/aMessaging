@@ -1,6 +1,31 @@
 # aMessaging
 
-## aMessaging is a simple wrapper for the BungeeCord Plugin Messaging Channel.
+aMessaging is a simple wrapper for the BungeeCord Plugin Messaging Channel.
+
+## Installation:
+
+### Maven:
+
+Repository:
+
+```xml
+
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+```
+
+Dependency:
+
+```xml
+
+<dependency>
+    <groupId>com.github.guikaua12</groupId>
+    <artifactId>aMessaging</artifactId>
+    <version>v0.1.0</version>
+</dependency>
+```
 
 ### Example Usage:
 
