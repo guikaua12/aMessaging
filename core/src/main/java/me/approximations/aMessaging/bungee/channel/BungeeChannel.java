@@ -34,7 +34,9 @@ import me.approximations.aMessaging.MessageCallback;
 import me.approximations.aMessaging.MessageListener;
 import me.approximations.aMessaging.bungee.callback.args.BungeeCallbackArgs;
 import me.approximations.aMessaging.bungee.input.args.BungeeInputArgs;
-import me.approximations.aMessaging.bungee.message.MessageAction;
+import me.approximations.aMessaging.bungee.message.actions.MessageAction;
+import me.approximations.aMessaging.bungee.message.response.handler.MessageResponseHandler;
+import me.approximations.aMessaging.bungee.message.response.handler.PlayerCountHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -44,18 +46,20 @@ import org.jetbrains.annotations.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArgs>, PluginMessageListener {
     public static final String BUNGEE_CHANNEL = "BungeeCord";
     private final List<MessageListener<BungeeCallbackArgs>> listeners = new ArrayList<>();
+    private final Map<String, MessageResponseHandler> responseHandlerMap = new HashMap<>();
     private final Plugin plugin;
 
     @Override
     public void init() {
         registerChannel();
+
+        responseHandlerMap.put(PlayerCountHandler.SUB_CHANNEL, new PlayerCountHandler());
     }
 
     public void registerChannel() {
@@ -128,6 +132,11 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
 
         final ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
         final String subchannel = in.readUTF();
+
+        final MessageResponseHandler handler = responseHandlerMap.get(subchannel);
+        if (handler != null) {
+            handler.handle(in);
+        }
 
         {
             final BungeeCallbackArgs args = new BungeeCallbackArgs(player, in);
