@@ -30,6 +30,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class ResponseableMessageAction<K, R> extends MessageAction {
+    /**
+     * Adds a CompletableFuture representing the message to the message response handler.
+     *
+     * @param responseHandler the message response handler to add
+     * @return the uncompleted future
+     */
     public @NotNull CompletableFuture<R> addFuture(MessageResponseHandler<K, R> responseHandler) {
         return CompletableFuture.completedFuture(null);
     }

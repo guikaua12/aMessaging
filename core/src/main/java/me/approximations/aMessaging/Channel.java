@@ -29,13 +29,43 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.CompletableFuture;
 
 public interface Channel<I extends MessageInputArgs, C extends MessageCallbackArgs> {
+    /**
+     * Initializes the channel.
+     */
     void init();
+
+    /**
+     * Retrieves the name.
+     *
+     * @return the name
+     */
 
     @NotNull String getName();
 
+    /**
+     * Subscribes to a subChannel and registers a listener for receiving messages.
+     *
+     * @param subChannel the name of the subChannel to subscribe to
+     * @param listener   the callback function to be invoked when a message is received
+     */
+
     void subscribe(@NotNull String subChannel, @NotNull MessageCallback<C> listener);
+
+    /**
+     * Sends a message with the given arguments.
+     *
+     * @param args the arguments for the message
+     */
 
     void sendMessage(@NotNull I args);
 
+    /**
+     * Sends a request-response message.
+     *
+     * @param args          the arguments for the message
+     * @param inputClazz    the class of the input type
+     * @param responseClazz the class of the response type
+     * @return a CompletableFuture representing the response
+     */
     <K, R> CompletableFuture<R> sendReqRespMessage(@NotNull I args, @NotNull Class<? extends K> inputClazz, @NotNull Class<? extends R> responseClazz);
 }

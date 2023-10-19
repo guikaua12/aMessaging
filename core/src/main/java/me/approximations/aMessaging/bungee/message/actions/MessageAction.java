@@ -30,14 +30,31 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 public abstract class MessageAction {
+    /**
+     * Retrieves the sub-channel of the MessageAction.
+     *
+     * @return The sub-channel represented as a string.
+     */
     public @NotNull String getSubChannel() {
         return "";
     }
 
+    /**
+     * Writes the head of the data to the specified data output.
+     *
+     * @param dataOutput the data output to write to
+     * @throws IOException if an I/O error occurs
+     */
     public void writeHead(@NotNull DataOutput dataOutput) throws IOException {
 
     }
 
+    /**
+     * Writes the body of the data to the specified DataOutput object.
+     *
+     * @param dataOutput the DataOutput object to write the body to
+     * @throws IOException if an I/O error occurs while writing the body
+     */
     public void writeBody(@NotNull DataOutput dataOutput) throws IOException {
 
     }
