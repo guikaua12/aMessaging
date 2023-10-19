@@ -24,6 +24,7 @@
 
 package me.approximations.aMessaging.bukkitTest;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -44,6 +45,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main extends JavaPlugin implements CommandExecutor {
     public static Main INSTANCE;
@@ -83,6 +86,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
         bungeeChannel.unregisterChannel();
     }
 
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!command.getName().equals("aMessagingTest")) return false;
@@ -93,8 +97,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
                         .messageAction(new PlayerCountAction(server))
                         .build(), String.class, Integer.class)
                 .thenAccept(playerCount -> {
-                    sender.sendMessage("Player count on server1: " + playerCount);
-                    System.out.println("Player count on server1: " + playerCount);
+                    sender.sendMessage("Player count on : " + server + " is " + playerCount);
                 });
 
         /*bungeeChannel.sendMessage(
