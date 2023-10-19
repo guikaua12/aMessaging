@@ -27,7 +27,17 @@ package me.approximations.aMessaging;
 import org.jetbrains.annotations.NotNull;
 
 public interface MessageListener<C extends MessageCallbackArgs> {
+    /**
+     * Retrieves the sub-channel of the object.
+     *
+     * @return The sub-channel of the object as a string.
+     */
     @NotNull String getSubChannel();
 
+    /**
+     * Retrieves the callback associated with the message.
+     *
+     * @return The callback associated with the message.
+     */
     @NotNull MessageCallback<C> getCallback();
 }

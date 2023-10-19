@@ -27,5 +27,10 @@ package me.approximations.aMessaging;
 import org.jetbrains.annotations.NotNull;
 
 public interface MessageCallback<T extends MessageCallbackArgs> {
+    /**
+     * Handles the given parameter.
+     *
+     * @param t the parameter to be handled
+     */
     void handle(@NotNull T t);
 }
