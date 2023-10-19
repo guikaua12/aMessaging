@@ -64,6 +64,7 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
         responseHandlerMap.put(IpOtherHandler.SUB_CHANNEL, new IpOtherHandler());
         responseHandlerMap.put(PlayerListHandler.SUB_CHANNEL, new PlayerListHandler());
         responseHandlerMap.put(GetPlayerServerHandler.SUB_CHANNEL, new GetPlayerServerHandler());
+        responseHandlerMap.put(GetServersHandler.SUB_CHANNEL, new GetServersHandler());
     }
 
     public void registerChannel() {
