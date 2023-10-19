@@ -24,6 +24,8 @@
 
 package me.approximations.aMessaging.bungee.message.response.handler;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.DataInput;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,4 +33,8 @@ public interface MessageResponseHandler<I, O> {
     void handle(DataInput dataInput);
 
     void addFuture(I key, CompletableFuture<O> future);
+
+    @NotNull Class<I> getInputClass();
+
+    @NotNull Class<O> getOutputClass();
 }

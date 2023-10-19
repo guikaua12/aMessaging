@@ -25,6 +25,7 @@
 package me.approximations.aMessaging.bungee.message.response.handler;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.IOException;
@@ -63,4 +64,16 @@ public class PlayerCountHandler implements MessageResponseHandler<String, Intege
 
         queue.add(future);
     }
+
+    @Override
+    public @NotNull Class<String> getInputClass() {
+        return String.class;
+    }
+
+    @Override
+    public @NotNull Class<Integer> getOutputClass() {
+        return Integer.class;
+    }
+
+
 }

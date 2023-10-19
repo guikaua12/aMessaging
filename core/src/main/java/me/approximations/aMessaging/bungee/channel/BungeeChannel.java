@@ -126,21 +126,29 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <K, R> CompletableFuture<R> sendReqRespMessage(BungeeInputArgs args, Class<? extends K> inputClazz, Class<? extends R> responseClazz) {
         if (!(args.getMessageAction() instanceof ResponseableMessageAction))
             throw new IllegalArgumentException("Unsupported message action");
 
+        final MessageAction messageAction = args.getMessageAction();
+        final MessageResponseHandler<?, ?> handler = responseHandlerMap.get(messageAction.getSubChannel());
+
+        if (handler == null) {
+            throw new IllegalStateException("No handler found for subchannel " + args.getMessageAction().getSubChannel());
+        }
+
+        if (!inputClazz.isAssignableFrom(handler.getInputClass()))
+            throw new IllegalArgumentException("Input class mismatch: " + inputClazz.getName() + " (provided) != " + handler.getInputClass().getName() + " (required)");
+
+        if (!responseClazz.isAssignableFrom(handler.getOutputClass()))
+            throw new IllegalArgumentException("Response class mismatch: " + responseClazz.getName() + " (provided) != " + handler.getOutputClass().getName() + " (required)");
+
         sendMessage(args);
 
-        final ResponseableMessageAction<K, R> messageAction = (ResponseableMessageAction<K, R>) args.getMessageAction();
-        final MessageResponseHandler<K, R> handler = responseHandlerMap.get(messageAction.getSubChannel());
-
-        if (handler == null)
-            throw new IllegalStateException("No handler found for subchannel " + args.getMessageAction().getSubChannel());
-
-
-        return messageAction.addFuture(handler);
+        final ResponseableMessageAction<K, R> responseableMessageAction = (ResponseableMessageAction<K, R>) args.getMessageAction();
+        return responseableMessageAction.addFuture((MessageResponseHandler<K, R>) handler);
     }
 
 
