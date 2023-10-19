@@ -36,10 +36,7 @@ import me.approximations.aMessaging.bungee.callback.args.BungeeCallbackArgs;
 import me.approximations.aMessaging.bungee.input.args.BungeeInputArgs;
 import me.approximations.aMessaging.bungee.message.actions.MessageAction;
 import me.approximations.aMessaging.bungee.message.actions.ResponseableMessageAction;
-import me.approximations.aMessaging.bungee.message.response.handler.IpOtherHandler;
-import me.approximations.aMessaging.bungee.message.response.handler.MessageResponseHandler;
-import me.approximations.aMessaging.bungee.message.response.handler.PlayerCountHandler;
-import me.approximations.aMessaging.bungee.message.response.handler.PlayerListHandler;
+import me.approximations.aMessaging.bungee.message.response.handler.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -66,6 +63,7 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
         responseHandlerMap.put(PlayerCountHandler.SUB_CHANNEL, new PlayerCountHandler());
         responseHandlerMap.put(IpOtherHandler.SUB_CHANNEL, new IpOtherHandler());
         responseHandlerMap.put(PlayerListHandler.SUB_CHANNEL, new PlayerListHandler());
+        responseHandlerMap.put(GetPlayerServerHandler.SUB_CHANNEL, new GetPlayerServerHandler());
     }
 
     public void registerChannel() {
