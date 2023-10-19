@@ -24,29 +24,17 @@
 
 package me.approximations.aMessaging.bukkitTest;
 
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Iterables;
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import me.approximations.aMessaging.bungee.channel.BungeeChannel;
 import me.approximations.aMessaging.bungee.input.args.BungeeInputArgs;
-import me.approximations.aMessaging.bungee.message.actions.ConnectOtherAction;
-import me.approximations.aMessaging.bungee.message.actions.ForwardAction;
-import me.approximations.aMessaging.bungee.message.actions.PlayerCountAction;
-import org.bukkit.Bukkit;
+import me.approximations.aMessaging.bungee.message.actions.responseable.GetServersAction;
+import me.approximations.aMessaging.bungee.message.actions.responseable.IpOtherAction;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.InetSocketAddress;
+import java.util.List;
 
 public class Main extends JavaPlugin implements CommandExecutor {
     public static Main INSTANCE;
@@ -91,13 +79,13 @@ public class Main extends JavaPlugin implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!command.getName().equals("aMessagingTest")) return false;
 
-        final String server = args[0];
+//        final String server = args[0];
 
         bungeeChannel.sendReqRespMessage(BungeeInputArgs.builder()
-                        .messageAction(new PlayerCountAction(server))
-                        .build(), String.class, Integer.class)
-                .thenAccept(playerCount -> {
-                    sender.sendMessage("Player count on : " + server + " is " + playerCount);
+                        .messageAction(new GetServersAction())
+                        .build(), Void.class, List.class)
+                .thenAccept(servers -> {
+                    sender.sendMessage(servers.toString());
                 });
 
         /*bungeeChannel.sendMessage(

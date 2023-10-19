@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class GetServersAction extends ResponseableMessageAction<String, List<String>> {
+public class GetServersAction extends ResponseableMessageAction<Void, List<String>> {
     public static final String SUB_CHANNEL = "GetServers";
 
     @Override
@@ -51,7 +51,7 @@ public class GetServersAction extends ResponseableMessageAction<String, List<Str
     }
 
     @Override
-    public @NotNull CompletableFuture<List<String>> addFuture(MessageResponseHandler<String, List<String>> responseHandler) {
+    public @NotNull CompletableFuture<List<String>> addFuture(MessageResponseHandler<Void, List<String>> responseHandler) {
         final CompletableFuture<List<String>> future = new CompletableFuture<>();
 
         responseHandler.addFuture(null, future);

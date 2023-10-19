@@ -35,7 +35,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Getter
-public class GetServersHandler implements MessageResponseHandler<String, List<String>> {
+public class GetServersHandler implements MessageResponseHandler<Void, List<String>> {
     public static final String SUB_CHANNEL = "GetServers";
     private static final List<String> EMPTY_LIST = Collections.emptyList();
 
@@ -57,13 +57,13 @@ public class GetServersHandler implements MessageResponseHandler<String, List<St
     }
 
     @Override
-    public void addFuture(@Nullable String key, @NotNull CompletableFuture<List<String>> future) {
+    public void addFuture(@Nullable Void key, @NotNull CompletableFuture<List<String>> future) {
         queue.add(future);
     }
 
     @Override
-    public @NotNull Class<String> getInputClass() {
-        return String.class;
+    public @NotNull Class<Void> getInputClass() {
+        return Void.class;
     }
 
     @Override
