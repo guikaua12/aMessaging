@@ -22,10 +22,11 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging.bungee.message.actions;
+package me.approximations.aMessaging.bungee.message.actions.responseable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import me.approximations.aMessaging.bungee.message.actions.ResponseableMessageAction;
 import me.approximations.aMessaging.bungee.message.response.handler.MessageResponseHandler;
 import org.jetbrains.annotations.NotNull;
 

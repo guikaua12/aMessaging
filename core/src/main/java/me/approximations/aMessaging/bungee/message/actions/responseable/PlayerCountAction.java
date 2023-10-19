@@ -22,21 +22,23 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging.bungee.message.actions;
+package me.approximations.aMessaging.bungee.message.actions.responseable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import me.approximations.aMessaging.bungee.message.actions.ResponseableMessageAction;
+import me.approximations.aMessaging.bungee.message.response.handler.MessageResponseHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ConnectOtherAction extends MessageAction {
-    public static final String SUB_CHANNEL = "ConnectOther";
-    private final String playerName;
-    private final String serverName;
+public class PlayerCountAction extends ResponseableMessageAction<String, Integer> {
+    public static final String SUB_CHANNEL = "PlayerCount";
+    private final String server;
 
     @Override
     public @NotNull String getSubChannel() {
@@ -44,9 +46,17 @@ public class ConnectOtherAction extends MessageAction {
     }
 
     @Override
-    public void writeHead(@NotNull DataOutput dataOutput) throws IOException {
-        dataOutput.writeUTF(SUB_CHANNEL);
-        dataOutput.writeUTF(playerName);
-        dataOutput.writeUTF(serverName);
+    public void writeHead(@NotNull DataOutput out) throws IOException {
+        out.writeUTF(SUB_CHANNEL);
+        out.writeUTF(server);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Integer> addFuture(MessageResponseHandler<String, Integer> responseHandler) {
+        final CompletableFuture<Integer> future = new CompletableFuture<>();
+
+        responseHandler.addFuture(server, future);
+
+        return future;
     }
 }
