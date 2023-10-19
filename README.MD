@@ -23,7 +23,7 @@ Dependency:
 <dependency>
     <groupId>com.github.guikaua12</groupId>
     <artifactId>aMessaging</artifactId>
-    <version>v0.1.0</version>
+    <version>v0.2.0</version>
 </dependency>
 ```
 
