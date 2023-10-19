@@ -22,10 +22,19 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging;
+package me.approximations.aMessaging.bungee.message.response.handler;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface MessageCallback<T extends MessageCallbackArgs> {
-    void handle(@NotNull T t);
+import java.io.DataInput;
+import java.util.concurrent.CompletableFuture;
+
+public interface MessageResponseHandler<I, O> {
+    void handle(@NotNull DataInput dataInput);
+
+    void addFuture(@NotNull I key, @NotNull CompletableFuture<O> future);
+
+    @NotNull Class<I> getInputClass();
+
+    @NotNull Class<O> getOutputClass();
 }

@@ -22,10 +22,41 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging;
+package me.approximations.aMessaging.bungee.message.actions.responseable;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import me.approximations.aMessaging.bungee.message.actions.ResponseableMessageAction;
+import me.approximations.aMessaging.bungee.message.response.handler.MessageResponseHandler;
 import org.jetbrains.annotations.NotNull;
 
-public interface MessageCallback<T extends MessageCallbackArgs> {
-    void handle(@NotNull T t);
+import java.io.DataOutput;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class PlayerCountAction extends ResponseableMessageAction<String, Integer> {
+    public static final String SUB_CHANNEL = "PlayerCount";
+    private final String server;
+
+    @Override
+    public @NotNull String getSubChannel() {
+        return SUB_CHANNEL;
+    }
+
+    @Override
+    public void writeHead(@NotNull DataOutput out) throws IOException {
+        out.writeUTF(SUB_CHANNEL);
+        out.writeUTF(server);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Integer> addFuture(MessageResponseHandler<String, Integer> responseHandler) {
+        final CompletableFuture<Integer> future = new CompletableFuture<>();
+
+        responseHandler.addFuture(server, future);
+
+        return future;
+    }
 }

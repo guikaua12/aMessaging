@@ -24,19 +24,17 @@
 
 package me.approximations.aMessaging.bukkitTest;
 
-import com.google.common.io.ByteArrayDataInput;
 import me.approximations.aMessaging.bungee.channel.BungeeChannel;
 import me.approximations.aMessaging.bungee.input.args.BungeeInputArgs;
-import me.approximations.aMessaging.bungee.message.actions.ForwardAction;
+import me.approximations.aMessaging.bungee.message.actions.responseable.GetServersAction;
+import me.approximations.aMessaging.bungee.message.actions.responseable.IpOtherAction;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.Arrays;
+import java.net.InetSocketAddress;
+import java.util.List;
 
 public class Main extends JavaPlugin implements CommandExecutor {
     public static Main INSTANCE;
@@ -51,25 +49,24 @@ public class Main extends JavaPlugin implements CommandExecutor {
         bungeeChannel = new BungeeChannel(this);
         bungeeChannel.init();
 
-        bungeeChannel.subscribe("someChannel", args -> {
-            final ByteArrayDataInput dataInput = args.getDataInput();
-
-            // TODO: implement a better api for this
-            final short len = dataInput.readShort();
-            final byte[] msgbytes = new byte[len];
-            dataInput.readFully(msgbytes);
-
-            final DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
-
-            try {
-                System.out.println(msgin.readInt());
-                System.out.println(msgin.readInt());
-                System.out.println(msgin.readUTF());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
+//        bungeeChannel.subscribe("someChannel", args -> {
+//            final ByteArrayDataInput dataInput = args.getDataInput();
+//
+//            // TODO: implement a better api for this
+//            final short len = dataInput.readShort();
+//            final byte[] msgbytes = new byte[len];
+//            dataInput.readFully(msgbytes);
+//
+//            final DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+//
+//            try {
+//                System.out.println(msgin.readInt());
+//                System.out.println(msgin.readInt());
+//                System.out.println(msgin.readUTF());
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
     }
 
     @Override
@@ -77,9 +74,19 @@ public class Main extends JavaPlugin implements CommandExecutor {
         bungeeChannel.unregisterChannel();
     }
 
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!command.getName().equals("aMessagingTest")) return false;
+
+//        final String server = args[0];
+
+        bungeeChannel.sendReqRespMessage(BungeeInputArgs.builder()
+                        .messageAction(new GetServersAction())
+                        .build(), Void.class, List.class)
+                .thenAccept(servers -> {
+                    sender.sendMessage(servers.toString());
+                });
 
         /*bungeeChannel.sendMessage(
                 BungeeInputArgs.builder()
@@ -87,11 +94,11 @@ public class Main extends JavaPlugin implements CommandExecutor {
                         .build()
         );*/
 
-        bungeeChannel.sendMessage(
-                BungeeInputArgs.builder()
-                        .messageAction(new ForwardAction(ForwardAction.SERVER_ALL, "someChannel", Arrays.asList(1337, 69, "pica")))
-                        .build()
-        );
+//        bungeeChannel.sendMessage(
+//                BungeeInputArgs.builder()
+//                        .messageAction(new ForwardAction(ForwardAction.SERVER_ALL, "someChannel", Arrays.asList(1337, 69, "pica")))
+//                        .build()
+//        );
 
         return true;
     }

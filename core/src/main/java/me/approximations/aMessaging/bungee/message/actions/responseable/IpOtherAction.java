@@ -22,19 +22,42 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging.bungee.input.args;
+package me.approximations.aMessaging.bungee.message.actions.responseable;
 
-import lombok.Builder;
 import lombok.Data;
-import me.approximations.aMessaging.MessageInputArgs;
-import me.approximations.aMessaging.bungee.message.actions.MessageAction;
-import org.bukkit.entity.Player;
+import lombok.EqualsAndHashCode;
+import me.approximations.aMessaging.bungee.message.actions.ResponseableMessageAction;
+import me.approximations.aMessaging.bungee.message.response.handler.MessageResponseHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import java.io.DataOutput;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.concurrent.CompletableFuture;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
-public class BungeeInputArgs implements MessageInputArgs {
-    private final @Nullable Player player;
-    private final @NotNull MessageAction messageAction;
+public class IpOtherAction extends ResponseableMessageAction<String, InetSocketAddress> {
+    public static final String SUB_CHANNEL = "IPOther";
+    private final String playerName;
+
+    @Override
+    public @NotNull String getSubChannel() {
+        return SUB_CHANNEL;
+    }
+
+    @Override
+    public void writeHead(@NotNull DataOutput out) throws IOException {
+        out.writeUTF(SUB_CHANNEL);
+        out.writeUTF(playerName);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<InetSocketAddress> addFuture(MessageResponseHandler<String, InetSocketAddress> responseHandler) {
+        final CompletableFuture<InetSocketAddress> future = new CompletableFuture<>();
+
+        responseHandler.addFuture(playerName, future);
+
+        return future;
+    }
 }

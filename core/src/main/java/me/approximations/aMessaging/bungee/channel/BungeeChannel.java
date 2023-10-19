@@ -34,7 +34,9 @@ import me.approximations.aMessaging.MessageCallback;
 import me.approximations.aMessaging.MessageListener;
 import me.approximations.aMessaging.bungee.callback.args.BungeeCallbackArgs;
 import me.approximations.aMessaging.bungee.input.args.BungeeInputArgs;
-import me.approximations.aMessaging.bungee.message.MessageAction;
+import me.approximations.aMessaging.bungee.message.actions.MessageAction;
+import me.approximations.aMessaging.bungee.message.actions.ResponseableMessageAction;
+import me.approximations.aMessaging.bungee.message.response.handler.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -44,18 +46,26 @@ import org.jetbrains.annotations.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArgs>, PluginMessageListener {
     public static final String BUNGEE_CHANNEL = "BungeeCord";
     private final List<MessageListener<BungeeCallbackArgs>> listeners = new ArrayList<>();
+    private final Map<String, MessageResponseHandler<?, ?>> responseHandlerMap = new HashMap<>();
     private final Plugin plugin;
 
     @Override
     public void init() {
         registerChannel();
+
+        responseHandlerMap.put(PlayerCountHandler.SUB_CHANNEL, new PlayerCountHandler());
+        responseHandlerMap.put(IpOtherHandler.SUB_CHANNEL, new IpOtherHandler());
+        responseHandlerMap.put(PlayerListHandler.SUB_CHANNEL, new PlayerListHandler());
+        responseHandlerMap.put(GetPlayerServerHandler.SUB_CHANNEL, new GetPlayerServerHandler());
+        responseHandlerMap.put(GetServersHandler.SUB_CHANNEL, new GetServersHandler());
+        responseHandlerMap.put(GetServerHandler.SUB_CHANNEL, new GetServerHandler());
     }
 
     public void registerChannel() {
@@ -74,15 +84,15 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
     }
 
     @Override
-    public void subscribe(String subChannel, MessageCallback<BungeeCallbackArgs> listener) {
+    public void subscribe(@NotNull String subChannel, @NotNull MessageCallback<BungeeCallbackArgs> listener) {
         listeners.add(new MessageListener<BungeeCallbackArgs>() {
             @Override
-            public String getSubChannel() {
+            public @NotNull String getSubChannel() {
                 return subChannel;
             }
 
             @Override
-            public MessageCallback<BungeeCallbackArgs> getCallback() {
+            public @NotNull MessageCallback<BungeeCallbackArgs> getCallback() {
                 return listener;
             }
         });
@@ -90,7 +100,7 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void sendMessage(BungeeInputArgs args) {
+    public void sendMessage(@NotNull BungeeInputArgs args) {
         final MessageAction messageAction = args.getMessageAction();
 
         final ByteArrayDataOutput out = ByteStreams.newDataOutput();
@@ -120,6 +130,31 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <K, R> CompletableFuture<R> sendReqRespMessage(@NotNull BungeeInputArgs args, @NotNull Class<? extends K> inputClazz, @NotNull Class<? extends R> responseClazz) {
+        if (!(args.getMessageAction() instanceof ResponseableMessageAction))
+            throw new IllegalArgumentException("Unsupported message action");
+
+        final MessageAction messageAction = args.getMessageAction();
+        final MessageResponseHandler<?, ?> handler = responseHandlerMap.get(messageAction.getSubChannel());
+
+        if (handler == null) {
+            throw new IllegalStateException("No handler found for subchannel " + args.getMessageAction().getSubChannel());
+        }
+
+        if (!inputClazz.isAssignableFrom(handler.getInputClass()))
+            throw new IllegalArgumentException("Input class mismatch: " + inputClazz.getName() + " (provided) != " + handler.getInputClass().getName() + " (required)");
+
+        if (!responseClazz.isAssignableFrom(handler.getOutputClass()))
+            throw new IllegalArgumentException("Response class mismatch: " + responseClazz.getName() + " (provided) != " + handler.getOutputClass().getName() + " (required)");
+
+        sendMessage(args);
+
+        final ResponseableMessageAction<K, R> responseableMessageAction = (ResponseableMessageAction<K, R>) args.getMessageAction();
+        return responseableMessageAction.addFuture((MessageResponseHandler<K, R>) handler);
+    }
+
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
@@ -128,6 +163,11 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
 
         final ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
         final String subchannel = in.readUTF();
+
+        final MessageResponseHandler<?, ?> handler = responseHandlerMap.get(subchannel);
+        if (handler != null) {
+            handler.handle(in);
+        }
 
         {
             final BungeeCallbackArgs args = new BungeeCallbackArgs(player, in);

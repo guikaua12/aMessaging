@@ -22,17 +22,40 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging.bungee.message;
+package me.approximations.aMessaging.bungee.message.actions.responseable;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import me.approximations.aMessaging.bungee.message.actions.ResponseableMessageAction;
+import me.approximations.aMessaging.bungee.message.response.handler.MessageResponseHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-public abstract class MessageAction {
-    public void writeHead(DataOutput dataOutput) throws IOException {
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class GetServersAction extends ResponseableMessageAction<Void, List<String>> {
+    public static final String SUB_CHANNEL = "GetServers";
 
+    @Override
+    public @NotNull String getSubChannel() {
+        return SUB_CHANNEL;
     }
 
-    public void writeBody(DataOutput dataOutput) throws IOException {
+    @Override
+    public void writeHead(@NotNull DataOutput out) throws IOException {
+        out.writeUTF(SUB_CHANNEL);
+    }
 
+    @Override
+    public @NotNull CompletableFuture<List<String>> addFuture(MessageResponseHandler<Void, List<String>> responseHandler) {
+        final CompletableFuture<List<String>> future = new CompletableFuture<>();
+
+        responseHandler.addFuture(null, future);
+
+        return future;
     }
 }

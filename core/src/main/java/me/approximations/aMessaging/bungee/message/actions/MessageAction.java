@@ -22,10 +22,23 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging;
+package me.approximations.aMessaging.bungee.message.actions;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface MessageCallback<T extends MessageCallbackArgs> {
-    void handle(@NotNull T t);
+import java.io.DataOutput;
+import java.io.IOException;
+
+public abstract class MessageAction {
+    public @NotNull String getSubChannel() {
+        return "";
+    }
+
+    public void writeHead(@NotNull DataOutput dataOutput) throws IOException {
+
+    }
+
+    public void writeBody(@NotNull DataOutput dataOutput) throws IOException {
+
+    }
 }

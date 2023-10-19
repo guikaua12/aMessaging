@@ -22,19 +22,52 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging.bungee.input.args;
+package me.approximations.aMessaging.bungee.message.response.handler;
 
-import lombok.Builder;
-import lombok.Data;
-import me.approximations.aMessaging.MessageInputArgs;
-import me.approximations.aMessaging.bungee.message.actions.MessageAction;
-import org.bukkit.entity.Player;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Data
-@Builder
-public class BungeeInputArgs implements MessageInputArgs {
-    private final @Nullable Player player;
-    private final @NotNull MessageAction messageAction;
+import java.io.DataInput;
+import java.io.IOException;
+import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+@Getter
+public class GetServerHandler implements MessageResponseHandler<Void, String> {
+    public static final String SUB_CHANNEL = "GetServer";
+
+    private final Queue<CompletableFuture<String>> queue = new ConcurrentLinkedQueue<>();
+
+    @Override
+    public void handle(@NotNull DataInput in) {
+        try {
+            final String servername = in.readUTF();
+
+            final CompletableFuture<String> future = queue.poll();
+
+            if (future == null) return;
+
+            future.complete(servername);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void addFuture(@Nullable Void key, @NotNull CompletableFuture<String> future) {
+        queue.add(future);
+    }
+
+    @Override
+    public @NotNull Class<Void> getInputClass() {
+        return Void.class;
+    }
+
+    @Override
+    public @NotNull Class<String> getOutputClass() {
+        return String.class;
+    }
+
 }

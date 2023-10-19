@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging.bungee.message.actions;
+package me.approximations.aMessaging.bungee.message.actions.normal;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import me.approximations.aMessaging.bungee.message.MessageAction;
+import me.approximations.aMessaging.bungee.message.actions.MessageAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataOutput;
@@ -44,15 +44,19 @@ public class ForwardAction extends MessageAction {
     private final @NotNull String subChannel;
     private final @NotNull List<Object> objects;
 
+    public @NotNull String getSubChannel() {
+        return SUB_CHANNEL;
+    }
+
     @Override
-    public void writeHead(DataOutput dataOutput) throws IOException {
+    public void writeHead(@NotNull DataOutput dataOutput) throws IOException {
         dataOutput.writeUTF(SUB_CHANNEL);
         dataOutput.writeUTF(server);
         dataOutput.writeUTF(subChannel);
     }
 
     @Override
-    public void writeBody(DataOutput dataOutput) throws IOException {
+    public void writeBody(@NotNull DataOutput dataOutput) throws IOException {
         for (Object object : objects) {
             if (object instanceof String) {
                 dataOutput.writeUTF((String) object);

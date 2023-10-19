@@ -24,8 +24,10 @@
 
 package me.approximations.aMessaging;
 
-public interface MessageListener<C extends MessageCallbackArgs> {
-    String getSubChannel();
+import org.jetbrains.annotations.NotNull;
 
-    MessageCallback<C> getCallback();
+public interface MessageListener<C extends MessageCallbackArgs> {
+    @NotNull String getSubChannel();
+
+    @NotNull MessageCallback<C> getCallback();
 }

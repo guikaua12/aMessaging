@@ -22,10 +22,15 @@
  * SOFTWARE.
  */
 
-package me.approximations.aMessaging;
+package me.approximations.aMessaging.bungee.message.actions;
 
+import me.approximations.aMessaging.bungee.message.response.handler.MessageResponseHandler;
 import org.jetbrains.annotations.NotNull;
 
-public interface MessageCallback<T extends MessageCallbackArgs> {
-    void handle(@NotNull T t);
+import java.util.concurrent.CompletableFuture;
+
+public abstract class ResponseableMessageAction<K, R> extends MessageAction {
+    public @NotNull CompletableFuture<R> addFuture(MessageResponseHandler<K, R> responseHandler) {
+        return CompletableFuture.completedFuture(null);
+    }
 }
