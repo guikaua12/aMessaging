@@ -53,6 +53,14 @@ public class Example extends JavaPlugin {
                         .messageAction(new ForwardAction(ForwardAction.SERVER_ALL, "add_coins_channel", Arrays.asList("Approximations", 1500)))
                         .build()
         );
+
+        // Send a req/resp message
+        bungeeChannel.sendReqRespMessage(BungeeInputArgs.builder()
+                        .messageAction(new PlayerCountAction("lobby"))
+                        .build(), String.class, Integer.class)
+                .thenAccept(playerCount -> {
+                    sender.sendMessage("there is " + playerCount + " players online on the lobby server");
+                });
     }
 }
 ```
