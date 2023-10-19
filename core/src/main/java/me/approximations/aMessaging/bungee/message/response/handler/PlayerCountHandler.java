@@ -41,7 +41,7 @@ public class PlayerCountHandler implements MessageResponseHandler<String, Intege
     private final Map<String, Queue<CompletableFuture<Integer>>> map = new HashMap<>();
 
     @Override
-    public void handle(DataInput in) {
+    public void handle(@NotNull DataInput in) {
         try {
             final String server = in.readUTF();
             final int playercount = in.readInt();
@@ -59,7 +59,7 @@ public class PlayerCountHandler implements MessageResponseHandler<String, Intege
     }
 
     @Override
-    public void addFuture(String key, CompletableFuture<Integer> future) {
+    public void addFuture(@NotNull String key, @NotNull CompletableFuture<Integer> future) {
         final Queue<CompletableFuture<Integer>> queue = map.computeIfAbsent(key, k -> new java.util.concurrent.ConcurrentLinkedQueue<>());
 
         queue.add(future);

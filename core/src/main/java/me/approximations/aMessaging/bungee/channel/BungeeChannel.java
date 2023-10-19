@@ -80,15 +80,15 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
     }
 
     @Override
-    public void subscribe(String subChannel, MessageCallback<BungeeCallbackArgs> listener) {
+    public void subscribe(@NotNull String subChannel, @NotNull MessageCallback<BungeeCallbackArgs> listener) {
         listeners.add(new MessageListener<BungeeCallbackArgs>() {
             @Override
-            public String getSubChannel() {
+            public @NotNull String getSubChannel() {
                 return subChannel;
             }
 
             @Override
-            public MessageCallback<BungeeCallbackArgs> getCallback() {
+            public @NotNull MessageCallback<BungeeCallbackArgs> getCallback() {
                 return listener;
             }
         });
@@ -96,7 +96,7 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void sendMessage(BungeeInputArgs args) {
+    public void sendMessage(@NotNull BungeeInputArgs args) {
         final MessageAction messageAction = args.getMessageAction();
 
         final ByteArrayDataOutput out = ByteStreams.newDataOutput();
@@ -128,7 +128,7 @@ public class BungeeChannel implements Channel<BungeeInputArgs, BungeeCallbackArg
 
     @SuppressWarnings("unchecked")
     @Override
-    public <K, R> CompletableFuture<R> sendReqRespMessage(BungeeInputArgs args, Class<? extends K> inputClazz, Class<? extends R> responseClazz) {
+    public <K, R> CompletableFuture<R> sendReqRespMessage(@NotNull BungeeInputArgs args, @NotNull Class<? extends K> inputClazz, @NotNull Class<? extends R> responseClazz) {
         if (!(args.getMessageAction() instanceof ResponseableMessageAction))
             throw new IllegalArgumentException("Unsupported message action");
 

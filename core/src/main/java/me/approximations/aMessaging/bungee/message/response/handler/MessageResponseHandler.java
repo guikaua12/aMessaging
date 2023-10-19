@@ -30,9 +30,9 @@ import java.io.DataInput;
 import java.util.concurrent.CompletableFuture;
 
 public interface MessageResponseHandler<I, O> {
-    void handle(DataInput dataInput);
+    void handle(@NotNull DataInput dataInput);
 
-    void addFuture(I key, CompletableFuture<O> future);
+    void addFuture(@NotNull I key, @NotNull CompletableFuture<O> future);
 
     @NotNull Class<I> getInputClass();
 

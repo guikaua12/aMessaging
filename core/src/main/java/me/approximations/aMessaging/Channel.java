@@ -33,9 +33,9 @@ public interface Channel<I extends MessageInputArgs, C extends MessageCallbackAr
 
     @NotNull String getName();
 
-    void subscribe(String subChannel, MessageCallback<C> listener);
+    void subscribe(@NotNull String subChannel, @NotNull MessageCallback<C> listener);
 
-    void sendMessage(I args);
+    void sendMessage(@NotNull I args);
 
-    <K, R> CompletableFuture<R> sendReqRespMessage(I args, Class<? extends K> inputClazz, Class<? extends R> responseClazz);
+    <K, R> CompletableFuture<R> sendReqRespMessage(@NotNull I args, @NotNull Class<? extends K> inputClazz, @NotNull Class<? extends R> responseClazz);
 }
